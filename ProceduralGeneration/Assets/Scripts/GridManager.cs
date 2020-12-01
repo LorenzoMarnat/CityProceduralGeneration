@@ -33,15 +33,21 @@ public class GridManager : MonoBehaviour
         {
             for (int j = 0; j < gridSize; j++)
             {
-                int buildingToInstantiate = PickBuilding();
+                //int buildingToInstantiate = PickBuildingRandom();
+                int buildingToInstantiate = PickBuildingPerlinNoise(i, j);
                 GameObject building = Instantiate(buildingPrefabs[buildingToInstantiate], new Vector3(i*buildingSize, 0, j*buildingSize), Quaternion.identity);
                 building.transform.parent = parent;
             }
         }
     }
 
-    private int PickBuilding()
+    private int PickBuildingRandom()
     {
         return Random.Range(0, buildingPrefabs.Count);
+    }
+
+    private int PickBuildingPerlinNoise(int i, int j)
+    {
+        return (int)(Mathf.PerlinNoise(i/10f, j/10f) * buildingPrefabs.Count);
     }
 }
