@@ -173,11 +173,11 @@ MonoBehaviour:
   - {fileID: 7266754988243445271, guid: 2f7fd14910d9eb24fbc7b05f24c424d5, type: 3}
   - {fileID: 4383479072189419286, guid: ccaf73f072d959a4bad14cdcc3d18b0b, type: 3}
   - {fileID: 4978647586086878761, guid: b7d4d1738fbb4f54280744015b094f29, type: 3}
-  gridSize: 57
+  gridSize: 105
   buildingSize: 1.5
-  seed: 1
-  pickMod: 2
-  townCenter: {x: 0, y: 0, z: 0}
+  noiseSize: 5
+  seed: -1
+  pickMod: 3
 --- !u!850595691 &543227945
 LightingSettings:
   m_ObjectHideFlags: 0

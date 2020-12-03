@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    [SerializeField]
-    Transform parent = null;
+    [SerializeField] Transform parent = null;
 
-    [SerializeField]
-    List<GameObject> buildingPrefabs = null;
+    [SerializeField] List<GameObject> buildingPrefabs = null;
 
-    [SerializeField, Range(10, 200)]
-    int gridSize = 10;
+    [SerializeField, Range(10, 200)] int gridSize = 10;
 
-    [SerializeField]
-    float buildingSize = 1f;
+    [SerializeField] float buildingSize = 1f;
 
-    [SerializeField]
-    int seed = -1;
+    [SerializeField] float noiseSize = 10f;
 
-    [SerializeField]
-    int pickMod = 0;
+    [SerializeField] int seed = -1;
+
+    [SerializeField] int pickMod = 0;
 
     private Vector3 townCenter;
     // Start is called before the first frame update
@@ -36,12 +32,12 @@ public class GridManager : MonoBehaviour
 
     private void GenerateGrid()
     {
-        for(int i = 0;i < gridSize;i++)
+        for (int i = 0; i < gridSize; i++)
         {
             for (int j = 0; j < gridSize; j++)
             {
                 int buildingToInstantiate = PickBuilding(i, j);
-                GameObject building = Instantiate(buildingPrefabs[buildingToInstantiate], new Vector3(i*buildingSize, 0, j*buildingSize), Quaternion.identity);
+                GameObject building = Instantiate(buildingPrefabs[buildingToInstantiate], new Vector3(i * buildingSize, 0, j * buildingSize), Quaternion.identity);
                 building.transform.parent = parent;
             }
         }
@@ -49,12 +45,14 @@ public class GridManager : MonoBehaviour
 
     private int PickBuilding(int i, int j)
     {
-        switch(pickMod)
+        switch (pickMod)
         {
             case 0: return PickBuildingRandom();
             case 1: return PickBuildingPerlinNoise(i, j);
             case 2: return PickBuildingTownCenter(i, j);
-            default: Debug.Log("Invalid picking mod");
+            case 3: return PickBuildingTownCenterWithNoise(i, j);
+            default:
+                Debug.Log("Invalid picking mod");
                 return 0;
         }
     }
@@ -65,7 +63,7 @@ public class GridManager : MonoBehaviour
 
     private int PickBuildingPerlinNoise(int i, int j)
     {
-        return (int)(Mathf.PerlinNoise(i/10f + seed, j/10f + seed) * buildingPrefabs.Count);
+        return (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
     }
 
     private int PickBuildingTownCenter(int i, int j)
@@ -76,7 +74,7 @@ public class GridManager : MonoBehaviour
 
         if (distanceToCenter < 0.33f * size)
             return buildingPrefabs.Count - 1;
-        else if(distanceToCenter < 0.66f * size)
+        else if (distanceToCenter < 0.66f * size)
             return buildingPrefabs.Count - 2;
         else if (distanceToCenter < size)
             return buildingPrefabs.Count - 3;
@@ -84,5 +82,56 @@ public class GridManager : MonoBehaviour
             return buildingPrefabs.Count - 4;
         else
             return 0;
+    }
+
+    private int PickBuildingTownCenterWithNoise(int i, int j)
+    {
+        Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
+        float distanceToCenter = Vector3.Distance(pos, townCenter);
+        float size = (gridSize * buildingSize) / 2f;
+
+        int noise = (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * 100);
+
+        if (distanceToCenter < 0.33f * size)
+        {
+            if (noise < 40)
+                return 4;
+            else if (noise >= 40 && noise < 80)
+                return 3;
+            else
+                return 0;
+        }
+        else if (distanceToCenter < 0.66f * size)
+        {
+            if (noise < 40)
+                return 3;
+            else if (noise >= 40 && noise < 80)
+                return 2;
+            else
+                return 0;
+        }
+        else if (distanceToCenter < size)
+        {
+            if (noise < 40)
+                return 2;
+            else if (noise >= 40 && noise < 70)
+                return 1;
+            else
+                return 0;
+        }
+        else if (distanceToCenter < 1.2f * size)
+        {
+            if (noise < 50)
+                return 1;
+            else
+                return 0;
+        }
+        else
+        {
+            if (noise < 30)
+                return 1;
+            else
+                return 0;
+        }
     }
 }
