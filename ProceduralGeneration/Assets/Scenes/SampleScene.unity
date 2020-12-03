@@ -168,13 +168,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 799116898}
   buildingPrefabs:
+  - {fileID: 7003272943904202005, guid: 93594f0a5aafea9499008bbba3431908, type: 3}
   - {fileID: 3587019125356102788, guid: c7ff2afc10f0998488e0db948aefc64d, type: 3}
   - {fileID: 7266754988243445271, guid: 2f7fd14910d9eb24fbc7b05f24c424d5, type: 3}
   - {fileID: 4383479072189419286, guid: ccaf73f072d959a4bad14cdcc3d18b0b, type: 3}
   - {fileID: 4978647586086878761, guid: b7d4d1738fbb4f54280744015b094f29, type: 3}
-  - {fileID: 7003272943904202005, guid: 93594f0a5aafea9499008bbba3431908, type: 3}
-  gridSize: 66
+  gridSize: 57
   buildingSize: 1.5
+  seed: 1
+  pickMod: 2
+  townCenter: {x: 0, y: 0, z: 0}
 --- !u!850595691 &543227945
 LightingSettings:
   m_ObjectHideFlags: 0
