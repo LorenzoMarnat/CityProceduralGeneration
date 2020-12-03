@@ -22,6 +22,10 @@ public class GridManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Resize grass asset to match the grid
+        buildingPrefabs[0].transform.localScale = new Vector3(buildingSize, 0.1f, buildingSize);
+
+        // Find center of the grid
         townCenter = new Vector3((gridSize / 2f) * buildingSize, 0, (gridSize / 2f) * buildingSize);
 
         if (seed < 0)
@@ -43,6 +47,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    // Pick a building depending on picking mod 
     private int PickBuilding(int i, int j)
     {
         switch (pickMod)
@@ -56,20 +61,26 @@ public class GridManager : MonoBehaviour
                 return 0;
         }
     }
+    // Pick a random building in building list
     private int PickBuildingRandom()
     {
         return Random.Range(0, buildingPrefabs.Count);
     }
 
+    // Pick a building following Perlin Noise
+    // The higher "noiseSize" is, the larger areas with the same building will be
     private int PickBuildingPerlinNoise(int i, int j)
     {
         return (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
     }
 
+    // Pick a building depending on the distance between building's position and town center
     private int PickBuildingTownCenter(int i, int j)
     {
         Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
         float distanceToCenter = Vector3.Distance(pos, townCenter);
+
+        // Grid radius
         float size = (gridSize * buildingSize) / 2f;
 
         if (distanceToCenter < 0.33f * size)
@@ -84,6 +95,7 @@ public class GridManager : MonoBehaviour
             return 0;
     }
 
+    // Pick a building using both distance with town center and Perlin noise
     private int PickBuildingTownCenterWithNoise(int i, int j)
     {
         Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
