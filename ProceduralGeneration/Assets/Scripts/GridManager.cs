@@ -53,9 +53,10 @@ public class GridManager : MonoBehaviour
         switch (pickMod)
         {
             case 0: return PickBuildingRandom();
-            case 1: return PickBuildingPerlinNoise(i, j);
-            case 2: return PickBuildingTownCenter(i, j);
-            case 3: return PickBuildingTownCenterWithNoise(i, j);
+            case 1: return PickBuildingTownCenter(i, j);
+            case 2: return PickBuildingTownCenterRandom(i, j);
+            case 3: return PickBuildingPerlinNoise(i, j);
+            case 4: return PickBuildingTownCenterWithNoise(i, j);
             default:
                 Debug.Log("Invalid picking mod");
                 return 0;
@@ -65,13 +66,6 @@ public class GridManager : MonoBehaviour
     private int PickBuildingRandom()
     {
         return Random.Range(0, buildingPrefabs.Count);
-    }
-
-    // Pick a building following Perlin Noise
-    // The higher "noiseSize" is, the larger areas with the same building will be
-    private int PickBuildingPerlinNoise(int i, int j)
-    {
-        return (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
     }
 
     // Pick a building depending on the distance between building's position and town center
@@ -93,6 +87,70 @@ public class GridManager : MonoBehaviour
             return buildingPrefabs.Count - 4;
         else
             return 0;
+    }
+
+    // Pick a building randomly depending on the distance between building's position and town center
+    private int PickBuildingTownCenterRandom(int i, int j)
+    {
+        Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
+        float distanceToCenter = Vector3.Distance(pos, townCenter);
+        float size = (gridSize * buildingSize) / 2f;
+
+        int building = Random.Range(0, 3);
+
+        if (distanceToCenter < 0.33f * size)
+        {
+            switch(building)
+            {
+                case 0: return 4;
+                case 1: return 3;
+                case 2: return 0;
+            }
+        }
+        else if (distanceToCenter < 0.66f * size)
+        {
+            switch (building)
+            {
+                case 0: return 3;
+                case 1: return 2;
+                case 2: return 0;
+            }
+        }
+        else if (distanceToCenter < size)
+        {
+            switch (building)
+            {
+                case 0: return 2;
+                case 1: return 1;
+                case 2: return 0;
+            }
+        }
+        else if (distanceToCenter < 1.2f * size)
+        {
+            switch (building)
+            {
+                case 0: return 1;
+                case 1: return 1;
+                case 2: return 0;
+            }
+        }
+        else
+        {
+            switch (building)
+            {
+                case 0: return 0;
+                case 1: return 0;
+                case 2: return 1;
+            }
+        }
+        return 0;
+    }
+
+    // Pick a building following Perlin Noise
+    // The higher "noiseSize" is, the larger areas with the same building will be
+    private int PickBuildingPerlinNoise(int i, int j)
+    {
+        return (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
     }
 
     // Pick a building using both distance with town center and Perlin noise
