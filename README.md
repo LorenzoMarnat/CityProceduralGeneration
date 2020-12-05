@@ -85,3 +85,27 @@ Voici le résultat obtenu:
 
 ![distance](https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/distance.PNG)
 
+Il y a deux problèmes évidents qui sautent aux yeux:
+- Déjà, le résultat est beaucoup trop uniforme
+- De plus, cela empêche totalement d'avoir par exemple de la verdure en centre-ville ou un immeuble en bordure
+
+Nous allons essayer de corriger ces problèmes en fusionnant cette méthode avec l'approche aléatoire.
+
+### Distance au centre et aléatoire
+
+Afin de pallier l'uniformité des cercles concentriques, nous allons non plus assigner à chacun un seul asset mais une liste de trois assets. Ainsi, pour chaque case, nous tirons un asset aléatoire dans une des listes réduites en fonction de la distance entre la case et le centre de la grille. Les listes des cercles proches du centre contiennent les plus grands bâtiments, inversement les cercles de bordures n'ont que l'herbe et le pavillon comme assets dans leur liste respective.
+Les listes sont les suivantes:
+- Premier cercle -> gratte-ciel, grand immeuble, herbe
+- Deuxième cercle -> grand immeuble, petit immeuble, herbe
+- Troisième cercle -> petit immeuble, pavillon, herbe
+- Quatrième cercle -> pavillon, pavillon, herbe
+- Cinquième cercle -> pavillon, herbe, herbe
+
+La répétition d'un même asset dans les deux dernières listes permet d'augmenter la probabilité d'apparition de l'un ou l'autre.
+
+Voici le résultat obtenu avec ces nouvelles listes:
+
+![random+distance](https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/random%2Bdistance2.PNG)
+
+Le résultat est bien meilleur, notamment grâce à la variance de taille entre les bâtiments voisins. La ville est moins uniforme et les cercles apparaissent de manière moins évidente. De plus, la possibilité de jouer avec les listes d'assets de chaque cercle et les taux d'apparitions de chaque asset offre une bonne flexibilité à cette solution. Malheureusement, cette approche pèche pour la création de _blocs_ d'un même asset. Par exemple, elle ne permet pas de créer un espace vert de grande taille ou de représenter un lotissement.
+
