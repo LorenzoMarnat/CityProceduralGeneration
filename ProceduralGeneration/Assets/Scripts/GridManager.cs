@@ -150,7 +150,13 @@ public class GridManager : MonoBehaviour
     // The higher "noiseSize" is, the larger areas with the same building will be
     private int PickBuildingPerlinNoise(int i, int j)
     {
-        return (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
+        int noise = (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * buildingPrefabs.Count);
+        if (noise >= 5)
+            return 4;
+        else if (noise < 0)
+            return 0;
+        else
+            return noise;
     }
 
     // Pick a building using both distance with town center and Perlin noise

@@ -175,7 +175,7 @@ MonoBehaviour:
   - {fileID: 4978647586086878761, guid: b7d4d1738fbb4f54280744015b094f29, type: 3}
   gridSize: 103
   buildingSize: 1.5
-  noiseSize: 2
+  noiseSize: 4
   seed: -1
   pickMod: 4
 --- !u!850595691 &543227945
