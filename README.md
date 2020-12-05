@@ -107,5 +107,8 @@ Voici le résultat obtenu avec ces nouvelles listes:
 
 ![random+distance](https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/random%2Bdistance2.PNG)
 
-Le résultat est bien meilleur, notamment grâce à la variance de taille entre les bâtiments voisins. La ville est moins uniforme et les cercles apparaissent de manière moins évidente. De plus, la possibilité de jouer avec les listes d'assets de chaque cercle et les taux d'apparitions de chaque asset offre une bonne flexibilité à cette solution. Malheureusement, cette approche pèche pour la création de _blocs_ d'un même asset. Par exemple, elle ne permet pas de créer un espace vert de grande taille ou de représenter un lotissement.
+Le résultat est bien meilleur, notamment grâce à la variance de taille entre les bâtiments voisins. La ville est moins uniforme et les cercles apparaissent de manière moins évidente. De plus, la possibilité de jouer avec les listes d'assets de chaque cercle et les taux d'apparitions de chaque asset offre une bonne flexibilité à cette solution. 
 
+Malheureusement, cette approche pèche pour la création de _blocs_ d'un même asset. Par exemple, elle ne permet pas de créer un espace vert de grande taille ou de représenter un lotissement.
+
+## Bruit de Perlin
