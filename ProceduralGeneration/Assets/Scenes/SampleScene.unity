@@ -177,7 +177,7 @@ MonoBehaviour:
   buildingSize: 1.5
   noiseSize: 4
   seed: -1
-  pickMod: 4
+  pickMod: 2
 --- !u!850595691 &543227945
 LightingSettings:
   m_ObjectHideFlags: 0
