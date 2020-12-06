@@ -220,7 +220,7 @@ Ainsi, la meilleure solution est certainement d'utiliser les deux méthodes, cha
 
 Si on prend l'exemple de la ville de Lyon, pour un quartier comme Part-Dieu (photo de gauche), les tailles et l'architecture sont très variables d'un bâtiment à l'autre et une génération utilisant de l'aléatoire semble adapté. Pour le 1er arrondissement (photo de droite), une méthode générant des bâtiments de la même taille et de la même forme est ce cas bien meilleure.
 
-<img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/PartDieu.jpg" title="Lyon Part-Dieu" alt="partDieu" width="400"/> <img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/1erLyon.jpg" align="right" title="Lyon 1er" alt="Lyon1er" width="430"/>
+<img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/PartDieu.jpg" title="Lyon Part-Dieu" alt="partDieu" width="400"/> <img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/1erLyon.jpg" title="Lyon 1er" alt="Lyon1er" width="430"/>
 
 On peut donc imaginer une méthode qui établira, manuellement ou procéduralement, des règles de génération différentes pour chaque quartier.
 
