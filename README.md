@@ -74,11 +74,11 @@ Le centre-ville est déterminé automatiquement comme étant le centre de la gri
 distance = Distance(building(i,j),townCenter)
 radius = gridSize / 2
 
-if (distance < 0.33 * radius) then return 4    # Premier cercle, correspond à l'asset gratte-ciel
-elif (distance < 0.66 * radius) then return 3  # Deuxième cercle, correspond à l'asset grand immeuble
-elif (distance < radius) then return 2         # Troisième cercle, correspond à l'asset petit immeuble
-elif (distance < 1.2 * radius) then return 1   # Quatrième cercle, correspond à l'asset pavillon
-else return 0                                  # Cinquième cercle, correspond à l'asset herbe
+if (distance < 0.33 * radius) return 4       # Premier cercle, correspond à l'asset gratte-ciel
+else if (distance < 0.66 * radius) return 3  # Deuxième cercle, correspond à l'asset grand immeuble
+else if (distance < radius) return 2         # Troisième cercle, correspond à l'asset petit immeuble
+else if (distance < 1.2 * radius) return 1   # Quatrième cercle, correspond à l'asset pavillon
+else return 0                                # Cinquième cercle, correspond à l'asset herbe
 ```
 
 Voici le résultat obtenu:
@@ -109,6 +109,101 @@ Voici le résultat obtenu avec ces nouvelles listes:
 
 Le résultat est bien meilleur, notamment grâce à la variance de taille entre les bâtiments voisins. La ville est moins uniforme et les cercles apparaissent de manière moins évidente. De plus, la possibilité de jouer avec les listes d'assets de chaque cercle et les taux d'apparitions de chaque asset offre une bonne flexibilité à cette solution. 
 
-Malheureusement, cette approche pèche pour la création de _blocs_ d'un même asset. Par exemple, elle ne permet pas de créer un espace vert de grande taille ou de représenter un lotissement.
+Malheureusement, cette approche pèche pour la création de _blocs_ d'un même asset. Par exemple, elle ne permet pas de créer un espace vert de grande taille ou de représenter un lotissement car il y a rarement des zones avec un seul et même asset.
 
 ## Bruit de Perlin
+
+Afin d'obtenir des zones plus cohérentes, avec par exemple un seul asset dans toute une zone, cette nouvelle approche utilise le bruit de Perlin. En traduisant le bruit de Perlin en entiers entre 1 et 5, on peut générer une ville avec un rendu moins "aléatoire" que les approches précédentes. Cette solution s'inspire de la vidéo "Generating a Procedural City with Unity 5 Part 1" de _Holistic3d_.
+
+<p>
+  <img align="right" alt="perlinNoise2D" width="200" src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/PerlinNoise2d.png">
+  Ainsi, les zones les plus sombres du bruit correspondront au plus haut bâtiment, le gratte-ciel. Inversement, les zones les plus claires joueront le rôle de l'herbe. Les autres bâtiments seront représentés par les nuances de gris, de plus en plus hauts quand la nuance tire vers le noir. De plus, l'introduction d'une <i>seed</i>, aléatoire ou arbitraire, permettra de varier les résultats. </p>
+  
+### Bruit seul
+
+Ici, on se contente de choisir un asset parmi les cinq disponibles en fonction de la valeur du bruit.
+
+![noise](https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/noise.PNG)
+
+Le rendu est très intéressant, notamment pour la création d'espaces verts: des parcs de grandes tailles au sein de la ville, proches que ce qu'on peut espérer trouver dans de grandes villes (des grands parcs plutôt qu'un multitude de minuscules espaces verts). Mais tout comme l'approche totalement aléatoire, on aimerait se rapprocher d'une image plus réaliste d'une ville en jouant sur la taille des bâtiments en fonction de leur distance au centre-ville.
+
+### Bruit et distance au centre
+
+Cette fois, on reprend le système de cercles concentriques autour du centre-ville. Ainsi, comme précédemment, on ne choisi plus un asset parmi les cinq disponibles mais parmi une liste réduite en fonction de la distance avec le centre-ville. Les cinq cercles restent les mêmes (voir partie _Distance au centre_).
+
+Pour chaque case de la grille, on tire une valeur de bruit, nommée _noise_, en fonction de la position _ij_ de la case. Cette valeur est montée entre 0 et 100 afin de pouvoir jouer avec les taux d'apparitions d'un asset.
+
+```
+int noise = (int)(PerlinNoise(i + seed, j + seed) * 100);
+```
+
+Un asset correspond à une fourchette de bruit. Les assets choisis et les fourchettes varient d'un cercle à l'autre.
+
+```
+# 4: gratte-ciel, 3: grand immeuble, 2: petit immeuble, 1: pavillon, 0: herbe
+
+        # 0 à 40 -> gratte-ciel, 40 à 80 -> grand immeuble, 80 à 100 -> herbe
+        if (distanceToCenter < 0.33f * radius){
+            if (noise < 40)
+                return 4;
+            else if (noise >= 40 && noise < 80)
+                return 3;
+            else
+                return 0;}
+        # 0 à 40 -> grand immeuble, 40 à 80 -> petit immeuble, 80 à 100 -> herbe
+        else if (distanceToCenter < 0.66f * radius){
+            if (noise < 40)
+                return 3;
+            else if (noise >= 40 && noise < 80)
+                return 2;
+            else
+                return 0;}
+        # 0 à 40 -> petit immeuble, 40 à 70 -> pavillon, 70 à 100 -> herbe
+        else if (distanceToCenter < radius){
+            if (noise < 40)
+                return 2;
+            else if (noise >= 40 && noise < 70)
+                return 1;
+            else
+                return 0;}
+        # 0 à 50 -> pavillon, 50 à 100 -> herbe
+        else if (distanceToCenter < 1.2f * radius){
+            if (noise < 50)
+                return 1;
+            else
+                return 0;}
+        # 0 à 30 -> pavillon, 30 à 100 -> herbe
+        else{
+            if (noise < 30)
+                return 1;
+            else
+                return 0;}
+```
+
+Voici le résultat obtenu avec cette nouvelle approche:
+
+![noise+distance](https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/noise%2Bdistance.PNG)
+
+Cette méthode permet de créer des aires cohérentes avec un même asset. Elle est particulièrement efficace pour générer des espaces verts et des zones pavillonnaires en bordure de ville.
+
+### Zoom dans le bruit
+
+Un autre avantage du bruit de Perlin est la possibilité de "zoomer" dans le bruit pour créer des zones unies plus grandes quand le zoom est plus important, et plus petites dans le cas inverse. Ce zoom ce traduit par l'implémentation de la variable _noiseSize_ dans le code.
+
+```
+int noise = (int)PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * 100);
+```
+
+Grâce à cette variable, on peut obtenir des résultats très uniformes (grande valeur _noiseSize_) ou semblant presque aléatoires (très petite valeur de _noiseSize_).
+
+<figure class="image">
+  <img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/noise10.PNG" title="noiseSize = 10" alt="noise10" width="450"/>
+  <figcaption> noiseSize = 10 </figcaption>
+</figure>
+<br>
+<figure class="image">
+  <img src="https://github.com/LorenzoMarnat/CityProceduralGeneration/blob/main/Screenshots/noise02.PNG" title="noiseSize = 2" alt="noise02" width="450"/>
+  <figcaption> noiseSize = 2 </figcaption>
+</figure>
+
+## Conclusion
