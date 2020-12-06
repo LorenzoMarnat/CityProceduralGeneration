@@ -75,16 +75,16 @@ public class GridManager : MonoBehaviour
         float distanceToCenter = Vector3.Distance(pos, townCenter);
 
         // Grid radius
-        float size = (gridSize * buildingSize) / 2f;
+        float radius = (gridSize * buildingSize) / 2f;
 
-        if (distanceToCenter < 0.33f * size)
-            return buildingPrefabs.Count - 1;
-        else if (distanceToCenter < 0.66f * size)
-            return buildingPrefabs.Count - 2;
-        else if (distanceToCenter < size)
-            return buildingPrefabs.Count - 3;
-        else if (distanceToCenter < 1.2f * size)
-            return buildingPrefabs.Count - 4;
+        if (distanceToCenter < 0.33f * radius)
+            return 4;
+        else if (distanceToCenter < 0.66f * radius)
+            return 3;
+        else if (distanceToCenter < radius)
+            return 2;
+        else if (distanceToCenter < 1.2f * radius)
+            return 1;
         else
             return 0;
     }
@@ -94,11 +94,11 @@ public class GridManager : MonoBehaviour
     {
         Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
         float distanceToCenter = Vector3.Distance(pos, townCenter);
-        float size = (gridSize * buildingSize) / 2f;
+        float radius = (gridSize * buildingSize) / 2f;
 
         int building = Random.Range(0, 3);
 
-        if (distanceToCenter < 0.33f * size)
+        if (distanceToCenter < 0.33f * radius)
         {
             switch(building)
             {
@@ -107,7 +107,7 @@ public class GridManager : MonoBehaviour
                 case 2: return 0;
             }
         }
-        else if (distanceToCenter < 0.66f * size)
+        else if (distanceToCenter < 0.66f * radius)
         {
             switch (building)
             {
@@ -116,7 +116,7 @@ public class GridManager : MonoBehaviour
                 case 2: return 0;
             }
         }
-        else if (distanceToCenter < size)
+        else if (distanceToCenter < radius)
         {
             switch (building)
             {
@@ -125,7 +125,7 @@ public class GridManager : MonoBehaviour
                 case 2: return 0;
             }
         }
-        else if (distanceToCenter < 1.2f * size)
+        else if (distanceToCenter < 1.2f * radius)
         {
             switch (building)
             {
@@ -164,11 +164,11 @@ public class GridManager : MonoBehaviour
     {
         Vector3 pos = new Vector3(i * buildingSize, 0, j * buildingSize);
         float distanceToCenter = Vector3.Distance(pos, townCenter);
-        float size = (gridSize * buildingSize) / 2f;
+        float radius = (gridSize * buildingSize) / 2f;
 
         int noise = (int)(Mathf.PerlinNoise(i / noiseSize + seed, j / noiseSize + seed) * 100);
 
-        if (distanceToCenter < 0.33f * size)
+        if (distanceToCenter < 0.33f * radius)
         {
             if (noise < 40)
                 return 4;
@@ -177,7 +177,7 @@ public class GridManager : MonoBehaviour
             else
                 return 0;
         }
-        else if (distanceToCenter < 0.66f * size)
+        else if (distanceToCenter < 0.66f * radius)
         {
             if (noise < 40)
                 return 3;
@@ -186,7 +186,7 @@ public class GridManager : MonoBehaviour
             else
                 return 0;
         }
-        else if (distanceToCenter < size)
+        else if (distanceToCenter < radius)
         {
             if (noise < 40)
                 return 2;
@@ -195,7 +195,7 @@ public class GridManager : MonoBehaviour
             else
                 return 0;
         }
-        else if (distanceToCenter < 1.2f * size)
+        else if (distanceToCenter < 1.2f * radius)
         {
             if (noise < 50)
                 return 1;
